@@ -1,0 +1,18 @@
+#header-bg {
+  /*Default color.*/
+  background-color: blue;
+}
+
+/*The theme JS can add / remove classes.*/
+#header-bg.barometer-cond1 {
+  background-color: green;
+}
+#header-bg.barometer-cond2 {
+  background-color: red;
+}
+
+#header-logo {
+  /*Let's just link to the Google logo as example.*/
+  background-image: url("https://www.google.de/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png");
+}
+

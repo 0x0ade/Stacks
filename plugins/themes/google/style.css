@@ -1,0 +1,30 @@
+#header-bg {
+  /*default - the logo changes with the day of time*/
+  background-image: url("https://lh5.ggpht.com/bosDZkBJxNdwo-dXGZeBkYtfCVnTFq96zqC08UV4dmIccI4YBr5p0CyCE7vmj2w=w9999-h9999");
+}
+
+#header-bg.gt-dawn {
+  background-image: url("https://lh5.ggpht.com/LeDpxkfCDssG2jwo20Tg01UxnUc4-PZUojwKsPzIQoGJ_CgbXc7KVko8o3nk5zA=w9999-h9999");
+}
+#header-bg.gt-day {
+  background-image: url("https://lh5.ggpht.com/bosDZkBJxNdwo-dXGZeBkYtfCVnTFq96zqC08UV4dmIccI4YBr5p0CyCE7vmj2w=w9999-h9999");
+}
+#header-bg.gt-dusk {
+  background-image: url("https://lh4.ggpht.com/DCGfFj7ILzkFXXDgCliyTAq-cjKs8eyoTstREjhB2grAzzjYnlelGfpIQ4cEX4c=w9999-h9999");
+}
+#header-bg.gt-night {
+  background-image: url("https://lh6.ggpht.com/QgqUFGYoAxRkyvbl_5Hq2L6CTsaGXt9kaqrMdSxga-462Uyv2IViGw7OBzDMWNI=w9999-h9999");
+}
+
+#header-bg.gt-doodle {
+  background-image: none;
+}
+
+#header-logo {
+  background-image: url("https://www.google.de/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png");
+}
+#header-logo.white {
+  background-color: transparent !important;
+  background-image: url("./img/googlelogo_white_272x92dp.png");
+}
+

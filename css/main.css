@@ -1,0 +1,278 @@
+/*MATERIALIZE*/
+
+.progress {
+  margin: 0 0 0 0; /*fixes progress bar being centered vertically*/
+  border-radius: 0; /*we want none*/
+  overflow: hidden; /*but if we want one, hide the rest*/
+  -webkit-mask-image: -webkit-radial-gradient(circle, white, black); /*chrome fix*/
+  background: #BBDEFB;
+}
+.progress .indeterminate {
+  background: #2196F3;
+}
+
+.input-field label {
+  left: 0; /*fixes text field label alignment in settings*/
+}
+
+input[type=text] {
+  height: 2rem; /*fixes too large single line text fields*/
+}
+
+/*input field suffix "patch"*/
+.input-field .suffix {
+  position: absolute;
+  right: 0;
+  width: 3rem;
+  font-size: 2rem;
+  -webkit-transition: color 0.2s;
+  -moz-transition: color 0.2s;
+  -o-transition: color 0.2s;
+  -ms-transition: color 0.2s;
+  transition: color 0.2s;
+}
+.input-field .suffix.active {
+  color: #26a69a;
+}
+.input-field .suffix ~ input, .input-field .suffix ~ textarea {
+  margin-right: 3rem;
+  width: 92%;
+  width: calc(100% - 3rem);
+}
+.input-field .suffix ~ textarea {
+  padding-top: 0.8rem;
+}
+.input-field .suffix ~ label {
+  margin-right: 3rem;
+}
+@media only screen and (max-width : 992px) {
+  .input-field .suffix ~ input {
+    width: 86%;
+    width: calc(100% - 3rem);
+  }
+}
+@media only screen and (max-width : 600px) {
+  .input-field .suffix ~ input {
+    width: 80%;
+    width: calc(100% - 3rem);
+  }
+}
+
+/*fix icon alignment of the text field suffix*/
+.suffix {
+  width: 3rem;
+  height: 3rem;
+}
+.suffix i {
+  position: absolute;
+  top: -1rem;
+  right: 0.5rem;
+}
+
+/*support class for localize.js in Materialize*/
+.nodiv {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+/*from http://google.github.io/material-design-icons/#icon-font-for-the-web */
+/* Rules for sizing the icon. */
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light { color: rgba(255, 255, 255, 1); }
+.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+/*MAIN*/
+
+body {
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box; /*that's "in"*/
+}
+
+#header-bg {
+  position: fixed;
+  z-index: -100;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 512px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+#header-logo {
+  position: absolute;
+  z-index: -98;
+  top: 128px;
+  left: calc(50% - 272px / 2);
+  width: 272px;
+  height: 92px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  -webkit-filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.16)) drop-shadow(0 2px 10px rgba(0, 0, 0, 0.12));
+  -moz-filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.16)) drop-shadow(0 2px 10px rgba(0, 0, 0, 0.12));
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.16)) drop-shadow(0 2px 10px rgba(0, 0, 0, 0.12));
+}
+
+#search {
+  transition: box-shadow 0.3s;
+  position: absolute;
+  z-index: 100;
+  top: calc(512px - 128px - 128px);
+  left: calc(50% - 640px / 2);
+  width: 640px;
+  height: 48px;
+  background: #FFF;
+  border-radius: 2px;
+}
+#search.fixed {
+  position: fixed;
+  top: 32px;
+}
+#search .progress {
+  transition: opacity 0.3s;
+  border-radius: 0 0 2px 2px;
+}
+#search #q {
+  padding-left: 8px;
+  width: calc(100% - 16px);
+  font-size: 16px;
+}
+#search #q, #search #q:focus {
+  border-bottom: none;
+  box-shadow: none;
+}
+#search #card-add {
+  position: absolute;
+  right: calc(-56px - 16px);
+  top: -4px;
+}
+
+#main {
+  background: #FAFAFA;
+  margin-top: calc(512px - 128px);
+  min-height: calc(100vh - 128px);
+  box-shadow: 0 -8px 64px rgba(0, 0, 0, 0.15), 0 -4px 32px rgba(0, 0, 0, 0.3);
+  padding-bottom: 128px;
+}
+#main-inner {
+  position: relative;
+  width: 800px;
+  max-width: 100vw;
+  margin: 0 auto;
+}
+.stack {
+  transition: transform 0.3s;
+  position: absolute;
+  width: 370px;
+  margin-top: -32px;/* !important; *//*if top: overriding shapeshift element style*/
+  z-index: 1;
+}
+.stack .card {
+  transition: box-shadow 0.3s, transform 0.3s;
+  /*width: 370px;*/
+  margin: 0;
+  z-index: 1;
+  overflow: hidden;
+  transform-origin: 50% 100%;
+}
+.stack-header {
+  transition: box-shadow 0.3s;
+  z-index: -1;
+  margin: 0 0 -4px 0;
+  background-color: #f5f5f5;
+  min-height: 48px;
+  line-height: 1.7em;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: #323232;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+.stack-actions, .card-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.stack-actions i, .card-actions i {
+  cursor: pointer;
+}
+
+.stack.no-transitions {
+  transition: none;
+  z-index: 49;
+}
+.stack.no-transitions .card, .stack.no-transitions .stack-header {
+  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.card[data-stack-hidden] {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 44px;
+  bottom: -4px;
+}
+.card[data-stack-hidden] .card-content {
+  opacity: 0;
+}
+
+.parallaxbg {
+  background-size: cover;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+
+.ui-autocomplete {
+  width: 100% !important;
+  margin: 0;
+  padding: 0;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  background: #fff;
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 16px;
+}
+.ui-autocomplete li {
+  transition: background 0.3s, color 0.3s;
+  width: 100%;
+  margin: 0;
+  padding: 8px;
+  cursor: pointer;
+}
+.ui-autocomplete li:hover {
+  background: #2196f3;
+  color: rgba(255, 255, 255, 0.87);
+}
+.ui-helper-hidden-accessible {
+  display: none;
+}
+
+
+@media screen and (max-width: 781px) {
+  #search {
+    width: calc(100vw - 96px);
+    left: 12px;
+  }
+}
+
+@media screen and (max-width: 779px) {
+  #main-inner .stack {
+    width: calc(100vw - 1px);
+    margin-left: -2px;/* !important; *//*if left: overriding shapeshift element style*/
+  }
+}

@@ -1,0 +1,79 @@
+//Note: Comments.. in JSON... are a thing in VSCode?!
+//Turns out JSON.parse hates us. Let's replace it!
+//... but GEdit shows us the comments as doorway to hell, sooooo..... ow, my eyes!
+// -ade
+
+/*
+This is the main plugin object.
+It will be added to Stacks.plugins and contains all important metadata for the plugin,
+f.e. script and style paths that will be fetched later on.
+*/
+{
+  /*
+  Your plugin identifier.
+  Preferably Android-esque (f.e. com.google.x, com.android.google.x, net.thatcompany.x),
+  optionally core.x for core modules.
+  
+  To avoid conflicts of plugins with the same name but different type, add the type
+  to the ID... or just keep this note in mind.
+  
+  For example: com.ade.stacks.source.barometer
+  ... reads as ...  
+  The "source" "barometer" with the owner / super-package "com.ade.stacks".
+  */
+  "id": "com.ade.stacks.source.barometer",
+  
+  /*
+  Human-readable name of your module.
+  If you need to localize the name, set Stacks.plugin[id].name
+  */
+  "name": "Barometer",
+  
+  /*
+  Human-readable description of your module.
+  If you need to localize the description, set Stacks.plugin[id].description
+  
+  Preferably just a short summary of what the plugin offers.
+  */
+  "description": "Shows the current barometer value in a separate stack.",
+  
+  /*
+  Version number.
+  */
+  "version": 0,
+  
+  /*
+  Main type of the plugin. Possible types:
+  none - No category; JS will be executed, CSS will always be added. Useful for multi-plugin installers. (Similar to source)
+  source - JS card source or any other script, will be executed. CS will always be added.
+  theme - JS + CSS theme. JS will be executed, CSS will only be added if the theme's enabled.
+  */
+  "type": "source",
+  
+  /*
+  Source paths for the plugin content.
+  JS will be fetched and eval-ed automatiaclly. It's a huge security risk, but we're warning the user already.
+  CSS will be added as style to the head of the document, see above (type) for information when it will be added.
+  
+  Core modules should either use ./plugins (local) or /plugins (root).
+  */
+  "js": "https://example.com/stacks/plugins/example/src.js",
+  "css": "https://example.com/stacks/plugins/example/style.css",
+  
+  /*
+  Plugin settings, which will be stored with Stacks' settings. The plugin should render its settings in the given
+  space. See http://materializecss.com/forms.html for what Materialize supports.
+  */
+  "settings": {
+    "unit": "pa"
+  },
+  
+  /*
+  This is just an JSON object, so...
+  */
+  "custom-thing": "Hello, World!",
+  "yetAnother_thing": {
+    "aKeyFor": ["an", "ARRay"],
+    "anotherKey": "anotherValue"
+  }
+}

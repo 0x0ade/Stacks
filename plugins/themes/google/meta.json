@@ -1,0 +1,19 @@
+{
+  "id": "core.theme.google",
+  "name": "Google",
+  "description": "Stacks core module - Google theme",
+  "version": 0,
+  "type": "theme",
+  "js": "./plugins/themes/google/src.js",
+  "css": "./plugins/themes/google/style.css",
+  "settings": {
+    "doodle": true
+  },
+  
+  "times": [
+    {"name": "dawn", "hour": 4, "dark": false},
+    {"name": "day", "hour": 10, "dark": false},
+    {"name": "dusk", "hour": 18, "dark": true},
+    {"name": "night", "hour": 21, "dark": true}
+  ]
+}

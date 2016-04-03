@@ -1,0 +1,12 @@
+{
+  "id": "core.source.wikipedia",
+  "name": "Wikipedia",
+  "description": "Stacks core module - Wikipedia source",
+  "version": 0,
+  "type": "source",
+  "js": "./plugins/sources/wikipedia/src.js",
+  
+  "kgsearch": {
+    "key": "AIzaSyAnSkhrnJBwqfO_zSSRyqWVjkbHFGXXrZE" //Replace this with your own key!
+  }
+}

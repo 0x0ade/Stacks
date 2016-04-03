@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Stacks</title>
+    <link rel="icon" type="image/png" href="./favicon.png">
+    <link rel="icon" sizes="192x192" href="./favicon-192.png">
+    <link rel="icon" sizes="544x544"  href="./favicon-hd.png">
+    <link rel="shortcut icon" type="image/png" href="./favicon.png">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:500,400italic,700italic,300,700,500italic,300italic,400' rel='stylesheet' type='text/css'>
+    
+    <!-- JQuery and third-party APIs -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+    <script src="https://www.google.com/jsapi"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="815060055713-or8bqdnlear2ua7d0s51toc71bllfn1t.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/client.js" async defer></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://www.promisejs.org/polyfills/promise-7.0.4.min.js"></script>
+    <script src="https://www.promisejs.org/polyfills/promise-done-7.0.4.min.js"></script>
+    
+    <!-- Materialize -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Other plugins -->
+    <!--script src="./js/velocity.min.js"></script--> <!-- http://julian.com/research/velocity/ --> <!-- Materialize loads it already -->
+    <script src="./js/color-thief.js"></script> <!-- https://github.com/lokesh/color-thief -->
+    <script src="./js/jquery.ui.touch-punch.min.js"></script> <!-- http://touchpunch.furf.com/ --> <!-- required by shapeshift -->
+    <script src="./js/jquery.shapeshift.js"></script> <!-- https://github.com/McPants/jquery.shapeshift/tree/3.0 -->
+    <script src="./js/strip-json-comments.js"></script> <!-- https://github.com/sindresorhus/strip-json-comments -->
+    
+    <!-- Default stylesheets -->
+    <link rel="stylesheet" href="./css/main.css">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#2196F3">
+    
+    <meta name="description" content="Google Now Web Mockup.">
+    <meta name="author" content="Maik 0x0ade Macho">
+  </head>
+  <body>
+    <div id="header-bg"></div>
+    <div id="header-logo"></div>
+    
+    <form id="search" class="z-depth-1" action="javascript:Stacks.onSearch();">
+      <input id="q" autocomplete="off" placeholder="" data-localize='{"placeholder": "search.placeholder"}'>
+      <div id="progress" class="progress" style="position: absolute; left: 0; bottom: 0; right: 0;"><div class="indeterminate"></div></div>
+      <a id="card-add" class="btn-floating btn-large waves-effect waves-light blue tooltipped" data-localize='{"data-tooltip": "stack.add"}' data-position="top" data-delay="50" data-tooltip=""><i class="large material-icons">add</i></a>
+    </form>
+    
+    <div id="main">
+      <div id="main-inner">
+      
+        <!-- Cards will be added here. -->
+      
+      </div>
+    </div>
+    
+    <!-- Stacks should be initialized as last -->
+    <script src="./js/localize.js"></script>
+    <script src="./js/stacks.js"></script>
+    
+  </body>
+</html>
