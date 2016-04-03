@@ -15,7 +15,7 @@
 
 Stacks = window.Stacks = {};
 Stacks.v = 0;
-Stacks.testing = true;
+Stacks.testing = false;
 Stacks.testingLogToToast = false;
 
 Stacks.lang = Localize.detected;
