@@ -224,10 +224,10 @@ body {
 }
 
 .stack .card.img-bright, .stack .card.img-bright a {
-  color: #000;
+  color: #fff;
 }
 .stack .card.img-dark, .stack .card.img-dark a {
-  color: #fff;
+  color: #000;
 }
 
 .card[data-stack-hidden] {

@@ -381,18 +381,18 @@ Stacks.getCardImageColor = function(card) {
       img[0].src = (window.URL || window.webkitURL).createObjectURL(blob);
       img.on("load", function() {
         var bg = tinycolor({r: 0, g: 0, b: 0});
-        colors.bgHSV = bg.toHsv();
+        var bgHSV = bg.toHsv();
         var colorsAll = Stacks.colorThief.getPalette(this, 16);
         for (var i = 0; i < colorsAll.length; i++) {
           var color = tinycolor({r: colorsAll[i][0], g: colorsAll[i][1], b: colorsAll[i][2]});
           var colorHSV = color.toHsv();
-          if ((colorHSV.s * 1.3 + colorHSV.v - (i / colorsAll.length) * 0.08) >= (colors.bgHSV.s * 1.3 + colors.bgHSV.v)) {
+          if ((colorHSV.s * 1.3 + colorHSV.v - (i / colorsAll.length) * 0.08) >= (bgHSV.s * 1.3 + bgHSV.v)) {
             bg = color;
-            colors.bgHSV = colorHSV;
+            bgHSV = colorHSV;
           }
         }
         
-        colors.bgRGB = bg.toRgb();
+        colors.bgRGB = bg.darken(25).toRgb();
         
         $(this).remove();
         Stacks.save();
@@ -415,9 +415,9 @@ Stacks.showCardImage = function(card) {
     var rgb = colors.bgRGB.r + ", " + colors.bgRGB.g + ", " + colors.bgRGB.b ;
     contentDOM[0].style["background"] = "linear-gradient(to top, " +
       "rgba(" + rgb + ", 1.0) 0%, " +
-      "rgba(" + rgb + ", 0.8) 30%, " +
-      "rgba(" + rgb + ", 0.6) 70%, " +
-      "rgba(" + rgb + ", 0.4) 100%)";
+      "rgba(" + rgb + ", 0.7) 30%, " +
+      "rgba(" + rgb + ", 0.5) 70%, " +
+      "rgba(" + rgb + ", 0.45) 100%)";
     
     if (((colors.bgRGB.r * 299) + (colors.bgRGB.g * 587) + (colors.bgRGB.b * 114)) / 1000 <= 127) {
       card.DOM.addClass("img-bright");
