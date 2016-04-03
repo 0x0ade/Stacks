@@ -182,12 +182,15 @@ body {
   z-index: 1;
 }
 .stack .card {
-  transition: box-shadow 0.3s, transform 0.3s;
+  transition: box-shadow 0.3s, transform 0.3s, color 0.3s;
   /*width: 370px;*/
   margin: 0;
   z-index: 1;
   overflow: hidden;
   transform-origin: 50% 100%;
+}
+.stack .card .card-content {
+  transition: opacity 0.3s, background 0.3s;
 }
 .stack-header {
   transition: box-shadow 0.3s;
@@ -218,6 +221,13 @@ body {
 }
 .stack.no-transitions .card, .stack.no-transitions .stack-header {
   box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.stack .card.img-bright, .stack .card.img-bright a {
+  color: #000;
+}
+.stack .card.img-dark, .stack .card.img-dark a {
+  color: #fff;
 }
 
 .card[data-stack-hidden] {

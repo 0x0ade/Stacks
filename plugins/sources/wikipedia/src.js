@@ -38,8 +38,15 @@ kgsearch = Stacks.sources["kgsearch"] = {
           
           card.title = encodeHTML(card.name);
           card.subtitle = encodeHTML(card.description);
+          
           if (card.detailedDescription != null) {
             card.body = "<p>"+card.detailedDescription.articleBody.replace("\n", "<br>")+"</p>"; //kgsearch already gives encoded output
+          }
+          
+          if (card.image != null) {
+            card.img = {
+              url: card.image.contentUrl
+            };
           }
           
           resolve(card);
@@ -65,8 +72,7 @@ wikipedia = Stacks.sources["wikipedia"] = {
   name: "Wikipedia",
   theme: {
     bg: "#fff",
-    fg: "#000",
-    card: "white black-text"
+    fg: "#000"
   },
   priority: 1,
   getURL: function() {

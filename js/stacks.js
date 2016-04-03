@@ -20,6 +20,8 @@ Stacks.testingLogToToast = false;
 
 Stacks.lang = Localize.detected;
 
+Stacks.colorThief = new ColorThief();
+
 encodeHTML = window.encodeHTML = Stacks.encodeHTML = function(s) {
   if (s == null) {
     return s;
@@ -168,7 +170,7 @@ Stacks.showProgress = function(show) {
   if (show == null) {
     show = true;
   }
-  Stacks.progressDOM.css("opacity", show ? 1 : 0);
+  Stacks.progressDOM[0].style["opacity"] = show ? 1 : 0;
 };
 Stacks.hideProgress = function() {
   Stacks.showProgress(false);
@@ -305,6 +307,7 @@ Stacks.genCardDOM = function(card) {
   
   return card.DOM;
 };
+
 Stacks.genBasicCardDOM = function(card) {
   if (Stacks.sources[card.source] == null) {
     Stacks.error("Could not find source \"" + card.source + "\" for \"" + card.q + "\"!");
@@ -338,23 +341,94 @@ Stacks.genBasicCardDOM = function(card) {
   var cardDOM = $("<div class=\"card" + theme + "\"><div class=\"card-content\">" + title + subtitle + body + "</div></div>");
   
   if (card.img != null) {
-    //TODO add image
-    cardDOM.addClass("parallaxbg")
-      .css({
-        "background-image": "url(" + card.img.url + ")",
-        "background-size": card.img.width + "px " + card.img.height + "px"
-      });
+    //TODO get previous background and create a gradient for it
+    cardDOM.find(".card-content")[0].style["background"] = "linear-gradient(to top, #fff 0%, #fff 30%, #fff 100%)";
+    cardDOM.addClass("parallaxbg")[0].style["background-image"] = "url(" + card.img.url + ")";
+    if (card.img.width != null && card.img.height != null) {
+      cardDOM[0].style["background-size"] = card.img.width + "px " + card.img.height + "px";
+    }
     
-    if (card.img.color == null) {
-      //TODO FIXME LEFT HERE
-      //Stacks.getCardImageColor(card).then(Stacks.showImage);
+    card.DOM = cardDOM; //we need card.DOM this early for showCardImage
+    if (card.img.colors == null) {
+      Stacks.getCardImageColor(card).then(Stacks.showCardImage);
     } else {
-      //Stacks.showImage(card);
+      Stacks.showCardImage(card);
     }
   }
   
   return cardDOM;
 };
+Stacks.getCardImageColor = function(card) {
+  return new Promise(function(resolve, reject) {
+    var colors = card.img.colors = {bright: null, bgRGB: null, bgHSV: null, scrim: {}};
+    var url = card.img.url;
+    var type = "image/" + url.substring(url.lastIndexOf(".") + 1);
+    
+    //We need to feed ColorThief an image but can't access it cross-domain directly.
+    //Let's just reinvent the wheel...
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState != 4) {
+        return;
+      }
+      if (xhr.status != 200) {
+        reject(card);
+        return;
+      }
+      
+      var blob = new Blob([new Uint8Array(xhr.response)], {type: type});
+      var img = $("<img>");
+      img[0].src = (window.URL || window.webkitURL).createObjectURL(blob);
+      img.on("load", function() {
+        var bg = tinycolor({r: 0, g: 0, b: 0});
+        colors.bgHSV = bg.toHsv();
+        var colorsAll = Stacks.colorThief.getPalette(this, 16);
+        for (var i = 0; i < colorsAll.length; i++) {
+          var color = tinycolor({r: colorsAll[i][0], g: colorsAll[i][1], b: colorsAll[i][2]});
+          var colorHSV = color.toHsv();
+          if ((colorHSV.s * 1.3 + colorHSV.v - (i / colorsAll.length) * 0.08) >= (colors.bgHSV.s * 1.3 + colors.bgHSV.v)) {
+            bg = color;
+            colors.bgHSV = colorHSV;
+          }
+        }
+        
+        colors.bgRGB = bg.toRgb();
+        
+        $(this).remove();
+        Stacks.save();
+        resolve(card);
+      });
+      $("#hidden").append(img);
+    };
+    xhr.open("GET", "https://vast-spire-8546.herokuapp.com/" + url.replace(/https?:\/\//g, ""), true);
+    xhr.responseType = "arraybuffer";
+    xhr.setRequestHeader("x-requested-with", "stacks");
+    xhr.send();
+  });
+};
+Stacks.showCardImage = function(card) {
+  return new Promise(function(resolve, reject) {
+    card.DOM.addClass("img");
+    var colors = card.img.colors;
+    var contentDOM = card.DOM.find(".card-content");
+    
+    var rgb = colors.bgRGB.r + ", " + colors.bgRGB.g + ", " + colors.bgRGB.b ;
+    contentDOM[0].style["background"] = "linear-gradient(to top, " +
+      "rgba(" + rgb + ", 1.0) 0%, " +
+      "rgba(" + rgb + ", 0.8) 30%, " +
+      "rgba(" + rgb + ", 0.6) 70%, " +
+      "rgba(" + rgb + ", 0.4) 100%)";
+    
+    if (((colors.bgRGB.r * 299) + (colors.bgRGB.g * 587) + (colors.bgRGB.b * 114)) / 1000 <= 127) {
+      card.DOM.addClass("img-bright");
+    } else {
+      card.DOM.addClass("img-dark");
+    }
+    
+    resolve(card);
+  });
+};
+
 Stacks.moveCard = function(_card_stack, _ni_card, _ni) {
   var stack;
   var card;
@@ -907,18 +981,19 @@ Stacks.refreshThemes = function() {
 })();
 
 window.addEventListener("scroll", function() {
-  Stacks.headerBGDOM.css("transform", "translateY(" + (-document.body.scrollTop * 0.2) + "px)");
+  Stacks.headerBGDOM[0].style["transform"] = "translateY(" + (-document.body.scrollTop * 0.2) + "px)";
   
   Stacks._parallaxbg.each(function(i) {
-    this.style["background-position"] = "50% calc(50% + " + ((document.body.scrollTop - this.getBoundingClientRect().top) * 0.05) + "px)";
+    this.style["background-position"] = "50% calc(50% + " + ((document.body.scrollTop - this.getBoundingClientRect().top) * 0.03) + "px)";
   });
   
   if (Stacks.searchY - Stacks.searchOffset <= document.body.scrollTop && !Stacks.searchSticky) {
     Stacks.searchSticky = true;
-    Stacks.searchDOM.css("position", "fixed").css("top", Stacks.searchOffset);
+    Stacks.searchDOM[0].style["position"] = "fixed";
+    Stacks.searchDOM[0].style["top"] = Stacks.searchOffset + "px";
   } else if (document.body.scrollTop < Stacks.searchY - Stacks.searchOffset && Stacks.searchSticky) {
     Stacks.searchSticky = false;
-    Stacks.searchDOM.css("position", "").css("top", "");
+    Stacks.searchDOM[0].style["position"] = Stacks.searchDOM[0].style["top"] = null;
   }
 });
 
