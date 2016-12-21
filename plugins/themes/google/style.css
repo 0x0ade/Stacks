@@ -23,8 +23,7 @@
 #header-logo {
   background-image: url("https://www.google.de/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png");
 }
-#header-logo.white {
-  background-color: transparent !important;
+#header-logo.gt-white {
   background-image: url("./img/googlelogo_white_272x92dp.png");
 }
 

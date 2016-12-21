@@ -1,0 +1,33 @@
+#splash {
+  background-color: #212121;
+}
+
+#app-titlebar, #app-buttons {
+  color: rgba(255, 255, 255, 1);
+}
+#app-titlebar {
+  background: rgba(48, 48, 48, 0.87);
+}
+
+#header-bg {
+  background-color: #101010;
+}
+
+#search {
+  background: #424242;
+  color: #ffffff;
+}
+
+#main {
+  background: #212121;
+}
+
+.stack-header {
+  background-color: #303030;
+  color: #ffffff;
+}
+
+.ui-autocomplete {
+  background: #424242;
+  color: #ffffff;
+}

@@ -1,8 +1,8 @@
 /* global Stacks */
 /* global encodeHTML */
 
-//Small strip-json-comments behavior change, which will kill me in the future:
-//Force JSON.parse to strip the comments
+// Small strip-json-comments behavior change, which will kill me in the future:
+// Force JSON.parse to strip the comments
 (function() {
   var __o_JSON_parse = JSON.parse;
   JSON.parse = function() {
@@ -18,9 +18,33 @@ Stacks.v = 0;
 Stacks.testing = false;
 Stacks.testingLogToToast = false;
 
+Stacks.app = window["apptype"];// || "testing";
+
+Stacks.settings = {
+  v: Stacks.v,
+  pluginURLs: [
+    "./plugins/sources/wikipedia/meta.json",
+    "./plugins/sources/feed/meta.json",
+    
+    "./plugins/themes/google/meta.json",
+    "./plugins/themes/dark/meta.json",
+  ],
+  themes: [
+    "core.theme.google",
+    "core.theme.dark"
+  ]
+};
+
 Stacks.lang = Localize.detected;
 
 Stacks.colorThief = new ColorThief();
+
+// Required to make materializecss update the tooltip
+Localize.listeners.localized.push(function(elem, data, p) {
+  if (p == "data-tooltip") {
+    elem.tooltip();
+  }
+});
 
 encodeHTML = window.encodeHTML = Stacks.encodeHTML = function(s) {
   if (s == null) {
@@ -66,7 +90,7 @@ Stacks.logt = function() {
     for (var i = 0; i < arguments.length; i++) {
       var arg = arguments[i];
       if (typeof arg == "string") {
-        //uhh...
+        // uhh...
       } else if (arg == undefined) {
         arg = arg === undefined ? "undefined" : "null?";
       } else if (typeof arg == "function") {
@@ -98,18 +122,6 @@ Stacks.logt = function() {
   if (Stacks.testingLogToToast) {
     Materialize.toast(msg, 10000, "green darken-4");
   }
-};
-
-Stacks.settings = {
-  v: Stacks.v,
-  pluginURLs: [
-    "./plugins/sources/wikipedia/meta.json",
-    
-    "./plugins/themes/google/meta.json"
-  ],
-  themes: [
-    "core.theme.google"
-  ]
 };
 
 Stacks.plugins = {};
@@ -157,13 +169,15 @@ Stacks.getSourcesSorted = function() {
 
 Stacks.headDOM = $(document.head);
 
+Stacks.splashDOM = $("#splash");
+
 Stacks.headerBGDOM = $("#header-bg");
 Stacks.headerLogoDOM = $("#header-logo");
 
 Stacks.searchDOM = $("#search");
 Stacks.searchY = Stacks.searchDOM.offset().top;
 Stacks.searchSticky = false;
-Stacks.searchOffset = 16;
+Stacks.searchOffset = 16 + (Stacks.app ? 48 : 0);
 
 Stacks.progressDOM = $("#search .progress");
 Stacks.showProgress = function(show) {
@@ -174,7 +188,11 @@ Stacks.showProgress = function(show) {
 };
 Stacks.hideProgress = function() {
   Stacks.showProgress(false);
+  setTimeout(() => Stacks.splashDOM.addClass("hidden"), 750);
 };
+
+Stacks.webviewHolderDOM = $("#webview-holder");
+Stacks.webviewDOM = Stacks.webviewHolderDOM.children[0];
 
 Stacks.qDOM = $("#search #q");
 Stacks.getQ = function() {
@@ -239,7 +257,7 @@ Stacks.stacksDOM.shapeshift({
 });
 Stacks.shapeshift = Stacks.stacksDOM.data("plugin_shapeshift");
 Stacks.refreshShapeshift = function() {
-  //shapeshift hates stacks - we need to forcibly refresh the height
+  // shapeshift hates stacks - we need to forcibly refresh the height
   for (var i = 0; i < Stacks.shapeshift.children.length; i++) {
     var child = Stacks.shapeshift.children[i];
     child.h = child.el.outerHeight();
@@ -291,7 +309,7 @@ Stacks.genCardDOM = function(card) {
   var action;
   
   if (card.actions != null) {
-    //TODO add, test card.actions
+    // TODO add, test card.actions
   }
   
   action = $("<i class=\"material-icons md-18\">close</i>");
@@ -323,7 +341,7 @@ Stacks.genBasicCardDOM = function(card) {
   }
   
   if (card.description != null) {
-    //TODO add subheader
+    // TODO add subheader
     subtitle = "";
   }
   
@@ -341,14 +359,14 @@ Stacks.genBasicCardDOM = function(card) {
   var cardDOM = $("<div class=\"card" + theme + "\"><div class=\"card-content\">" + title + subtitle + body + "</div></div>");
   
   if (card.img != null) {
-    //TODO get previous background and create a gradient for it
-    cardDOM.find(".card-content")[0].style["background"] = "linear-gradient(to top, #fff 0%, #fff 30%, #fff 100%)";
+    // TODO get previous background and create a gradient for it
+    cardDOM.find(".card-content").addClass("placeholder-gradient");
     cardDOM.addClass("parallaxbg")[0].style["background-image"] = "url(" + card.img.url + ")";
     if (card.img.width != null && card.img.height != null) {
       cardDOM[0].style["background-size"] = card.img.width + "px " + card.img.height + "px";
     }
     
-    card.DOM = cardDOM; //we need card.DOM this early for showCardImage
+    card.DOM = cardDOM; // We need card.DOM this early for showCardImage
     if (card.img.colors == null) {
       Stacks.getCardImageColor(card).then(Stacks.showCardImage);
     } else {
@@ -364,8 +382,8 @@ Stacks.getCardImageColor = function(card) {
     var url = card.img.url;
     var type = "image/" + url.substring(url.lastIndexOf(".") + 1);
     
-    //We need to feed ColorThief an image but can't access it cross-domain directly.
-    //Let's just reinvent the wheel...
+    // We need to feed ColorThief an image but can't access it cross-domain directly.
+    // Let's just reinvent the wheel...
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
       if (xhr.readyState != 4) {
@@ -418,6 +436,7 @@ Stacks.showCardImage = function(card) {
       "rgba(" + rgb + ", 0.7) 30%, " +
       "rgba(" + rgb + ", 0.5) 70%, " +
       "rgba(" + rgb + ", 0.45) 100%)";
+    contentDOM.removeClass("placeholder-gradient");
     
     if (((colors.bgRGB.r * 299) + (colors.bgRGB.g * 587) + (colors.bgRGB.b * 114)) / 1000 <= 127) {
       card.DOM.addClass("img-bright");
@@ -452,6 +471,7 @@ Stacks.moveCard = function(_card_stack, _ni_card, _ni) {
   stack.cards.splice(ni, 0, card);
   
   Stacks.refresh();
+  Stacks.save();
 };
 Stacks.updateCardPositions = function(stack) {
   if (typeof stack == "number") {
@@ -461,12 +481,20 @@ Stacks.updateCardPositions = function(stack) {
     var card = stack.cards[i];
     card.stack = stack.id;
     card.index = i;
+    if (card.DOM == null) {
+      Stacks.removeCard(card);
+      return;
+    }
     card.DOM.attr("data-stack-id", stack.id).attr("data-stack-index", i);
     Stacks.updateCardPosition(card);
   }
 };
 Stacks.updateCardPosition = function(card) {
   var i = card.index;
+  if (card.DOM == null) {
+    Stacks.removeCard(card);
+    return;
+  }
   if (0 < i) {
     var f = 1 / ((i + 16) / 16);
     card.DOM.attr("data-stack-hidden", "")
@@ -562,8 +590,8 @@ Stacks.addStack = function(stack, loading) {
     
     Stacks.updateCardPositions(stack);
     
-    //Stacks.shapeshift.addChild(stack.DOM);
-    //shapeshift only allows adding as last; we want to add as first!
+    // Stacks.shapeshift.addChild(stack.DOM);
+    // shapeshift only allows adding as last; we want to add as first!
     var ssid = parseInt(stack.DOM.attr("data-ssid"));
     if (isNaN(ssid)) {
       stack.DOM.attr("data-ssid", ssid = ++Stacks.shapeshift.idCount);
@@ -665,53 +693,70 @@ Stacks.removeStack = function(stack) {
   if (typeof stack == "number") {
     stack = Stacks.stacks[stack];
   }
-  
-  stack.DOM.velocity({
-    "opacity": 0
-  }, {
-    duration: 200,
-    complete: function() {
-      stack.DOM.find(".tooltipped").tooltip("remove");
-      Stacks.stacks.splice(stack.id, 1);
-      for (var i = 0; i < stack.cards.length; i++) {
-        Stacks.cards.splice(stack.cards[i].id, 1);
-      }
-      //shapeshift doesn't "support" removal
-      //... yet it's still possible
+
+  var complete = function() {
+    if (stack.DOM != null) stack.DOM.find(".tooltipped").tooltip("remove");
+    Stacks.stacks.splice(stack.id, 1);
+    for (var i = 0; i < stack.cards.length; i++) {
+      Stacks.cards.splice(stack.cards[i].id, 1);
+    }
+    // shapeshift doesn't "support" removal
+    // ... yet it's still possible
+    if (stack.DOM != null)
       Stacks.shapeshift.children.splice(
         Stacks.shapeshift.children.indexOf(
           Stacks.shapeshift._getChildById(
             parseInt(stack.DOM.attr("data-ssid")))
           )
       , 1);
-      stack.DOM.remove();
-      Stacks.refresh();
-      Stacks.save();
-    }
+    if (stack.DOM != null) stack.DOM.remove();
+    Stacks.refresh();
+    Stacks.save();
+  };
+  
+  if (stack.DOM == null) {
+    complete();
+    return;
+  }
+
+  stack.DOM.velocity({
+    "opacity": 0,
+    "translateY": 8
+  }, {
+    duration: 200,
+    complete: complete
   });
 };
 Stacks.removeCard = function(card) {
   if (typeof card == "number") {
     card = Stacks.cards[card];
   }
+
+  var complete = function() {
+    if (card.DOM != null) card.DOM.find(".tooltipped").tooltip("remove");
+    Stacks.cards.splice(card.id, 1);
+    var stack = Stacks.stacks[card.stack];
+    stack.cards.splice(card.index, 1);
+    if (card.DOM != null) card.DOM.remove();
+    if (stack.cards.length == 0) {
+      Stacks.removeStack(stack);
+    } else {
+      Stacks.refresh();
+      Stacks.save();
+    }
+  };
+
+  if (card.DOM == null) {
+    complete();
+    return;
+  }
   
   card.DOM.velocity({
-    "opacity": 0
+    "opacity": 0,
+    "translateY": 8
   }, {
     duration: 200,
-    complete: function() {
-      card.DOM.find(".tooltipped").tooltip("remove");
-      Stacks.cards.splice(card.id, 1);
-      var stack = Stacks.stacks[card.stack];
-      stack.cards.splice(card.index, 1);
-      card.DOM.remove();
-      if (stack.cards.length == 0) {
-        Stacks.removeStack(stack);
-      } else {
-        Stacks.refresh();
-        Stacks.save();
-      }
-    }
+    complete: complete
   });
 };
 
@@ -776,7 +821,7 @@ Stacks.addStackFromQ = function(q, resolve, reject) {
 Stacks.onSearch = function(q) {
   if (typeof q != "string") {
     q = Stacks.getQ();
-    //Stacks.setQ("");
+    // Stacks.setQ("");
   }
   
   if (q == null || q.length == 0) {
@@ -788,7 +833,7 @@ Stacks.onSearch = function(q) {
   Stacks.search(q);
 };
 Stacks.search = function(q) {
-  //Primitive Google search - plugins may replace this.
+  // Primitive Google search - plugins may replace this.
   window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(q);
 };
 
@@ -799,7 +844,7 @@ Stacks.save = function() {
   localStorage["Stacks.settings"] = JSON.stringify(Stacks.settings);
   
   Stacks.stacks.sort(function(a, b) {
-    //reverse!
+    // reverse!
     return Stacks.shapeshift._getChildById(parseInt(b.DOM.attr("data-ssid"))).index
       - Stacks.shapeshift._getChildById(parseInt(a.DOM.attr("data-ssid"))).index;
   });
@@ -883,9 +928,9 @@ Stacks.initPluginJS = function(plugin) {
     $.ajax({
       url: plugin.js,
       dataType: "script",
-      cache: true,
+      cache: false,
       success: function(src) {
-        //jQuery already evals for us
+        // jQuery already evals for us
         resolve(plugin);
       },
       error: Stacks.genCall(reject, plugin)
@@ -965,7 +1010,7 @@ Stacks.refreshThemes = function() {
   }
 };
 
-//GENERAL SETUP
+// GENERAL SETUP
 
 (function() {
   var __o__toggleChildState = Stacks.shapeshift._toggleChildState;
@@ -989,10 +1034,12 @@ window.addEventListener("scroll", function() {
   
   if (Stacks.searchY - Stacks.searchOffset <= document.body.scrollTop && !Stacks.searchSticky) {
     Stacks.searchSticky = true;
+    Stacks.searchDOM.addClass("sticky");
     Stacks.searchDOM[0].style["position"] = "fixed";
     Stacks.searchDOM[0].style["top"] = Stacks.searchOffset + "px";
   } else if (document.body.scrollTop < Stacks.searchY - Stacks.searchOffset && Stacks.searchSticky) {
     Stacks.searchSticky = false;
+    Stacks.searchDOM.removeClass("sticky");
     Stacks.searchDOM[0].style["position"] = Stacks.searchDOM[0].style["top"] = null;
   }
 });
@@ -1016,10 +1063,10 @@ $("#search>input").autocomplete({
 
 $("#card-add").on("click", Stacks.addStackFromQ);
 
-//TESTING CODE
+// TESTING CODE
 if (Stacks.testing) {
   Stacks.warn("Testing mode!");
-  /*Stacks.sources["testing"] = {
+  Stacks.sources["testing"] = {
     id: "testing",
     theme: {
       bg: "#f44336",
@@ -1033,7 +1080,39 @@ if (Stacks.testing) {
       });
     },
     genDOM: Stacks.genBasicCardDOM
-  }*/
+  }
+}
+
+if (Stacks.app) {
+  document.children[0].setAttribute("app", true);
+
+  if (Stacks.app == "electron") {
+    var electron = Stacks.electron = require("electron");
+    $("#app-minimize").on("click", () => electron.remote.BrowserWindow.getFocusedWindow().minimize());
+    $("#app-maximize").on("click", function() {
+      var swindow = electron.remote.BrowserWindow.getFocusedWindow();
+      if (swindow.isMaximized())
+        swindow.unmaximize();
+      else swindow.maximize();
+    });
+    $("#app-close").on("click", () => window.close());
+
+  } else if (Stacks.app == "testing") {
+    var requestFullscreen = (
+      HTMLElement.prototype["requestFullscreen"] ||
+      HTMLElement.prototype["webkitRequestFullscreen"]
+    ).bind(document.documentElement);
+    var exitFullscreen = (
+      Document.prototype["exitFullscreen"] ||
+      Document.prototype["webkitExitFullscreen"]
+    ).bind(document);
+    $("#app-maximize").on("click", function() {
+      if (!document["fullscreenElement"] && !document["webkitFullscreenElement"])
+        requestFullscreen();
+      else exitFullscreen();
+    });
+  }
+
 }
 
 Stacks.load();

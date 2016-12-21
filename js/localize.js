@@ -12,7 +12,7 @@ Localize.fallbacklang = "en";
 Localize.langs = {};
 Localize.dynamic = {};
 Localize.detected = navigator.language || navigator.userLanguage;
-Localize.listeners = {get: [], geterror: [], add: []};
+Localize.listeners = {get: [], geterror: [], add: [], localized: []};
 
 Localize.handlers = {
   "default": null,
@@ -157,7 +157,7 @@ $.fn["localize"] = function() {
     var self = $(this);
     var data = self.attr("data-localize");
     try {
-      data = JSON.parse(self.attr("data-localize"));
+      data = JSON.parse(data);
       for (var p in data) {
         if (!data.hasOwnProperty(p)) {
           continue;
@@ -167,6 +167,7 @@ $.fn["localize"] = function() {
         } else {
           self.attr(p, localized(data[p]));
         }
+        Localize.callListeners(Localize.listeners.localized, self, data, p);
       }
     } catch (e) {
       self.text(localized(data));

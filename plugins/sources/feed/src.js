@@ -1,13 +1,8 @@
-//KGSEARCH
-/* global kgsearch */
-/*
-kgsearch seemed promising... until it delivered worse results than the previous Wikipedia implementation.
-We're leaving it as fallback for disambiguations.
-*/
+/* global feed */
 
-kgsearch = Stacks.sources["kgsearch"] = {
-  id: "kgsearch",
-  name: "Google Knowledge Graph [WIKI ALT]",
+feed = Stacks.sources["feed"] = {
+  id: "feed",
+  name: "RSS feed",
   theme: {
     bg: "#fff",
     fg: "#000"
@@ -115,7 +110,6 @@ wikipedia = Stacks.sources["wikipedia"] = {
           
           if (response.query == null) {
             reject();
-            return;
           }
           
           for (var prop in response.query.pages) {

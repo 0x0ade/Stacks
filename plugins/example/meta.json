@@ -15,11 +15,11 @@ f.e. script and style paths that will be fetched later on.
   optionally core.x for core modules.
   
   To avoid conflicts of plugins with the same name but different type, add the type
-  to the ID... or just keep this note in mind.
+  to the ID. Stacks doesn't do that for you to keep the id consistent.
   
   For example: com.ade.stacks.source.barometer
   ... reads as ...  
-  The "source" "barometer" with the owner / super-package "com.ade.stacks".
+  The (type) "source" (name) "barometer" with the owner / super-package "com.ade.stacks".
   */
   "id": "com.ade.stacks.source.barometer",
   

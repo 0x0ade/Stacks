@@ -1,0 +1,8 @@
+{
+  "id": "core.theme.dark",
+  "name": "Dark",
+  "description": "Stacks core module - Dark theme",
+  "version": 0,
+  "type": "theme",
+  "css": "./plugins/themes/dark/style.css"
+}
