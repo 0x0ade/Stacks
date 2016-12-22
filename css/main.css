@@ -101,6 +101,10 @@ body {
   box-sizing: border-box; /*that's "in"*/
 }
 
+a {
+  cursor: pointer;
+}
+
 html[inapp="false"] .app {
   display: none !important;
 }
@@ -154,8 +158,8 @@ html[inapp="true"]::-webkit-scrollbar-thumb:hover {
   user-select: none;
   -webkit-user-select: none;
 }
-html[webview="true"] #webview-holder {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 1);
+html[inwebview="true"] #app-titlebar {
+  background: rgba(255, 255, 255, 1);
 }
 
 #app-titlebar i {
@@ -188,18 +192,17 @@ html[webview="true"] #webview-holder {
   top: 0;
   left: 0;
   padding: 8px;
-  width: 128px;
+  width: 166px;
   height: 100%;
   opacity: 0;
   pointer-events: none;
 }
-html[webview="true"] #app-webview-buttons {
-  opacity: 1;
+html[inwebview="true"] #app-webview-buttons {
   pointer-events: auto;
 }
 
 #app-dragarea-top {
-  position: absolute;
+  position: fixed;
   display: block;
   top: 0;
   left: 0;
@@ -208,17 +211,21 @@ html[webview="true"] #app-webview-buttons {
   user-select: none;
   -webkit-user-select: none;
   -webkit-app-region: drag;
+  /* background: rgba(255, 255, 0, 0.5); */
+  z-index: 13371335;
 }
 #app-dragarea-bar {
-  position: absolute;
+  position: fixed;
   display: block;
   top: 0;
-  left: 128px;
-  width: calc(100vw - 256px);
-  height: 100%;
+  left: 166px;
+  width: calc(100vw - 128px - 166px);
+  height: 48px;
   user-select: none;
   -webkit-user-select: none;
   -webkit-app-region: drag;
+  /* background: rgba(255, 0, 0, 0.5); */
+  z-index: 13371336;
 }
 
 #webview-holder {
@@ -233,16 +240,28 @@ html[webview="true"] #app-webview-buttons {
   opacity: 0;
   pointer-events: none;
 }
-html[webview="true"] #webview-holder {
+html[inwebview="true"] #webview-holder {
   opacity: 1;
   pointer-events: auto;
 }
 #webview-holder webview {
+  transition: opacity 0.3s, transform 0.3s;
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
+  background: #e0e0e0;
+  animation: webview-open 0.3s both;
+  animation-direction: normal;
+}
+@keyframes webview-open {
+  0% { opacity: 0; transform: translateY(512px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes webview-close {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-512px); }
 }
 
 #header-bg {

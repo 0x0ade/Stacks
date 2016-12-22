@@ -1,0 +1,2 @@
+// not CommonJS
+module = undefined;

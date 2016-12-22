@@ -85,25 +85,26 @@
     <div id="header-logo"></div>
 
     <div id="scrollbar-shadow" class="app"></div>
+
+    <div id="app-dragarea-top" class="app"></div>
+    <div id="app-dragarea-bar" class="app"></div>
     <div id="app-titlebar" class="app">
-      <div id="app-dragarea-top"></div>
-      <div id="app-dragarea-bar"></div>
       <div id="app-window-buttons">
         <i id="app-minimize" class="material-icons">expand_more</i>
         <i id="app-maximize" class="material-icons">check_box_outline_blank</i>
         <i id="app-close" class="material-icons">close</i>
       </div>
       <div id="app-webview-buttons">
-        <i id="app-webview-back" class="material-icons">exit_to_app</i>
-        <i id="app-webview-forward" class="material-icons">arrow_back</i>
-        <i id="app-webview-close" class="material-icons">arrow_forward</i>
+        <i id="app-webview-close" class="material-icons">exit_to_app</i>
+        <i id="app-webview-browser" class="material-icons">open_in_new</i>
+        <i id="app-webview-back" class="material-icons">arrow_back</i>
+        <i id="app-webview-forward" class="material-icons">arrow_forward</i>
       </div>
     </div>
 
     <div id="webview-holder" class="app">
-      <webview></webview>
+      <!-- webview preload="./preload_webview.js"></webview -->
     </div>
-
     
     <form id="search" class="z-depth-1" action="javascript:Stacks.onSearch();">
       <input id="q" autocomplete="off" placeholder="" data-localize='{"placeholder": "search.placeholder"}'>
@@ -124,6 +125,7 @@
     <!-- Stacks should be initialized as last -->
     <script src="./js/localize.js"></script>
     <script src="./js/stacks.js"></script>
+    <script src="./js/webview.js"></script>
     
   </body>
 </html>

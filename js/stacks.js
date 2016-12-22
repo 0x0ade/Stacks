@@ -373,6 +373,15 @@ Stacks.genBasicCardDOM = function(card) {
       Stacks.showCardImage(card);
     }
   }
+
+  if (Stacks.app) {
+    cardDOM.find("a").each(function() {
+      var a = $(this);
+      var href = a.attr("href"); // Before replacing it
+      a.on("click", Stacks.genCall(webview.open, href));
+      a.attr("href", null);
+    });
+  }
   
   return cardDOM;
 };
@@ -836,6 +845,13 @@ Stacks.search = function(q) {
   // Primitive Google search - plugins may replace this.
   window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(q);
 };
+Stacks.webviewSearch = function(q) {
+  // Primitive Google search in an electron webview - plugins may replace this.
+  Stacks.settings.lastSearch = undefined;
+  Stacks.addStackFromQ();
+  Stacks.setQ("");
+  webview.open("https://www.google.com/search?q=" + encodeURIComponent(q));
+};
 
 Stacks.save = function() {
   Stacks.logt("stacks: saving");
@@ -1088,6 +1104,8 @@ document.children[0].setAttribute("app", Stacks.app);
 if (Stacks.app) {
   if (Stacks.app == "electron") {
     var electron = Stacks.electron = require("electron");
+    var shell = Stacks.shell = Stacks.electron.shell;
+
     $("#app-minimize").on("click", () => electron.remote.BrowserWindow.getFocusedWindow().minimize());
     $("#app-maximize").on("click", function() {
       var swindow = electron.remote.BrowserWindow.getFocusedWindow();
@@ -1096,6 +1114,22 @@ if (Stacks.app) {
       else swindow.maximize();
     });
     $("#app-close").on("click", () => window.close());
+
+    $("#app-webview-close").on("click", () => webview.close());
+    $("#app-webview-browser").on("click", function() {
+      shell.openExternal(webview.DOM[0].getURL());
+      webview.close();
+    });
+    $("#app-webview-back").on("click", function() {
+      webview.DOM[0].goBack();
+      // TODO refresh button states
+    });
+    $("#app-webview-forward").on("click", function() {
+      webview.DOM[0].goForward();
+      // TODO refresh button states
+    });
+
+    Stacks.search = Stacks.webviewSearch;
 
   } else if (Stacks.app == "testing") {
     var requestFullscreen = (

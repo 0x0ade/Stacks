@@ -8,6 +8,9 @@
 #app-titlebar {
   background: rgba(48, 48, 48, 0.87);
 }
+html[inwebview="true"] #app-titlebar {
+  background: rgba(48, 48, 48, 1);
+}
 
 #header-bg {
   background-color: #101010;

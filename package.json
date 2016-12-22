@@ -20,8 +20,5 @@
   "devDependencies": {
     "electron": "^1.4.1",
     "electron-rebuild": "^1.4.0"
-  },
-  "dependencies": {
-    "electron-open-link-in-browser": "^1.0.2"
   }
 }
