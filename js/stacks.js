@@ -1083,9 +1083,8 @@ if (Stacks.testing) {
   }
 }
 
+document.children[0].setAttribute("app", Stacks.app);
 if (Stacks.app) {
-  document.children[0].setAttribute("app", true);
-
   if (Stacks.app == "electron") {
     var electron = Stacks.electron = require("electron");
     $("#app-minimize").on("click", () => electron.remote.BrowserWindow.getFocusedWindow().minimize());

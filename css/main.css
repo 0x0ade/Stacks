@@ -101,6 +101,10 @@ body {
   box-sizing: border-box; /*that's "in"*/
 }
 
+html[app="false"] .app {
+  display: none !important;
+}
+
 html[app="true"]::-webkit-scrollbar {
   width: 14px;
 }
@@ -431,11 +435,4 @@ html[webview="true"] #webview-holder {
     width: calc(100vw - 1px);
     margin-left: -2px;/* !important; *//*if left: overriding shapeshift element style*/
   }
-}
-
-.app {
-  display: none;
-}
-html[app="true"] .app {
-  display: initial;
 }
