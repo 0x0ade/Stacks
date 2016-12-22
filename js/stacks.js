@@ -1083,6 +1083,7 @@ if (Stacks.testing) {
   }
 }
 
+document.children[0].setAttribute("inapp", Stacks.app != null);
 document.children[0].setAttribute("app", Stacks.app);
 if (Stacks.app) {
   if (Stacks.app == "electron") {

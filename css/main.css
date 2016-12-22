@@ -101,22 +101,22 @@ body {
   box-sizing: border-box; /*that's "in"*/
 }
 
-html[app="false"] .app {
+html[inapp="false"] .app {
   display: none !important;
 }
 
-html[app="true"]::-webkit-scrollbar {
+html[inapp="true"]::-webkit-scrollbar {
   width: 14px;
 }
-html[app="true"]::-webkit-scrollbar-track {
+html[inapp="true"]::-webkit-scrollbar-track {
   background: #212121;
 }
-html[app="true"]::-webkit-scrollbar-thumb {
+html[inapp="true"]::-webkit-scrollbar-thumb {
   background-color: #757575;
   border: 1px solid #424242;
   border-radius: 2px;
 }
-html[app="true"]::-webkit-scrollbar-thumb:hover {
+html[inapp="true"]::-webkit-scrollbar-thumb:hover {
   background-color: #9E9E9E;
   border: 1px solid #757575;
 }
