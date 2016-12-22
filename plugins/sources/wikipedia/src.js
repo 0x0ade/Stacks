@@ -170,7 +170,7 @@ wikipedia = Stacks.sources["wikipedia"] = {
         }
         
         if (disambiguation) {
-          //We're moving over!
+          // We're moving over!
           var i = -1;
           var step = function() {
             ++i;

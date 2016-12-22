@@ -7,223 +7,105 @@ feed = Stacks.sources["feed"] = {
     bg: "#fff",
     fg: "#000"
   },
-  priority: -1,
-  genCard: function(q) {
-    return new Promise(function(resolve, reject) {
-      $.getJSON("https://kgsearch.googleapis.com/v1/entities:search?callback=?", 
-        {
-          "languages": Stacks.lang,
-          "query": q,
-          "limit": 1,
-          "indent": true,
-          "key": Stacks.plugins["core.source.wikipedia"].kgsearch.key,
-        },
-        function(response) {
-          Stacks.logt("kgsearch: response", response);
-          if (response.itemListElement.length == 0) {
-            reject();
-            return;
-          }
-          var card = response.itemListElement[0].result;
-          if (card.name == null) {
-            reject();
-            return;
-          }
-          card.resultScore = response.itemListElement[0].resultScore;
-          
-          card.title = encodeHTML(card.name);
-          card.subtitle = encodeHTML(card.description);
-          
-          if (card.detailedDescription != null) {
-            card.body = "<p>"+card.detailedDescription.articleBody.replace("\n", "<br>")+"</p>"; //kgsearch already gives encoded output
-          }
-          
-          if (card.image != null) {
-            card.img = {
-              url: card.image.contentUrl
-            };
-          }
-          
-          resolve(card);
-      }).fail(reject);
-    });
-  },
-  genCards: function(q) {
-    return new Promise(function(resolve, reject) {
-      kgsearch.genCard(q).then(function(card) {
-        resolve([card]);
-      }, reject);
-    });
-  },
-  genDOM: Stacks.genBasicCardDOM
-};
-
-//WIKIPEDIA
-/* global wikipedia */
-
-wikipedia = Stacks.sources["wikipedia"] = {
-  id: "wikipedia",
-  altsources: ["kgsearch"], //alternatives for when Wikipedia gives up
-  name: "Wikipedia",
-  theme: {
-    bg: "#fff",
-    fg: "#000"
-  },
   priority: 1,
-  getURL: function() {
-    return "https://"+Stacks.lang+".wikipedia.org/w/api.php?continue=&callback=?";
+
+  refreshCard: function(card) {
+
   },
-  
-  search: function(q) {
+
+  load: function(p) {
     return new Promise(function(resolve, reject) {
-      $.getJSON(wikipedia.getURL(),
-        {
-          "format": "json",
-          "formatversion": "2",
-          "action": "query",
-          "list": "search",
-          "srsearch": q
-        },
-        function(response) {
-          Stacks.logt("wikipedia: query search", response);
-          
-          if (response.query.search.length == 0) {
-            reject(response);
-            return;
-          }
-          
-          resolve(response.search);
-      }).fail(reject);
-    });
-  },
-  
-  query_: function(p) {
-    return new Promise(function(resolve, reject) {
-      $.getJSON(wikipedia.getURL(), 
+      $.getJSON("https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&callback=?", 
         $.extend({
-          "format": "json",
-          "formatversion": "2",
-          "action": "query"
+          "num": "3",
+          "q": p.q
         }, p.args || {}),
         function(response) {
-          Stacks.logt("wikipedia: query", response);
+          Stacks.logt("feed: load", response);
           
-          if (response.query == null) {
+          if (response.responseStatus != 200) {
             reject();
+            return;
           }
           
-          for (var prop in response.query.pages) {
-            if (response.query.pages.hasOwnProperty(prop) && response.query.pages[prop].pageid != null) {
-              resolve(response.query.pages);
-              return;
-            }
-          }
-          
-          reject();
+          resolve(response.responseData.feed);
       }).fail(reject);
     });
   },
-  
-  query: function(p) {
-    p.args = $.extend({"titles": p.q}, p.args || {});
-    return wikipedia.query_(p);
+
+  find: function(p) {
+    return new Promise(function(resolve, reject) {
+      $.getJSON("https://ajax.googleapis.com/ajax/services/feed/find?v=1.0&callback=?", 
+        $.extend({
+          "q": p.q
+        }, p.args || {}),
+        function(response) {
+          Stacks.logt("feed: find", response);
+          
+          if (
+            response.responseStatus != 200 ||
+            response.responseData.entries.length == 0
+          ) {
+            reject();
+            return;
+          }
+          
+          resolve(response.responseData.entries[0]);
+      }).fail(reject);
+    });
   },
-  
-  querySearch: function(p) {
-    p.args = $.extend({
-      "generator": "search",
-      "gsrlimit": (p.amount || 1).toString(),
-      "gsrsearch": p.q
-    }, p.args || {});
-    return wikipedia.query_(p);
+
+  loadOrFind: function(p) {
+    return new Promise(function(resolve, reject) {
+      feed.load(p).then(
+        (feed) => resolve(feed), // Directly return feed.
+
+        () => feed.find(p).then( // Find feed URL,
+          (f) => feed.load({q: f.url}).then( // load feed from URL,
+            (feed) => resolve(feed), // return feed.
+            reject // Feed not loaded.
+          ), reject // Feed not found.
+        )
+      );
+    });
   },
-  
-  queryForCard: function(p) {
-    p.amount = 3;
-    p.args = $.extend({
-      "prop": "pageimages|pageprops|extracts",
-      "exintro": "",
-      "explaintext": "",
-      "excontinue": "",
-      "exlimit": p.amount.toString(),
-      "redirects": "1",
-      "pithumbsize": (p.size || 650).toString()
-    }, p.args || {});
-    return wikipedia.querySearch(p);
-  },
-  
+
   genCards: function(q) {
     return new Promise(function(resolve, reject) {
-      wikipedia.queryForCard({q: q}).then(function(cards) {
-        var disambiguation = cards.length == 0;
-        for (var ci = 0; ci < cards.length; ++ci) {
-          if (cards[ci].pageprops.disambiguation != null) {
-            disambiguation = true;
-            break;
+      feed.loadOrFind({q: q}).then(function(feed) {
+        if (feed.entries.length == 0) {
+            reject();
+            return;
           }
-        }
-        
-        if (disambiguation) {
-          //We're moving over!
-          var i = -1;
-          var step = function() {
-            ++i;
-            if (wikipedia.altsources.length <= i) {
-              reject();
-              return;
-            }
+          
+          var cards = [];
+          
+          for (var i = 0; i < feed.entries.length; i++) {
+            var card = feed.entries[i];
+
+            card.feedUrl = feed.feedUrl;
+            card.refreshing = true;
+            card.index = i;
+
+            card.url = card.link;
+
+            card.title = encodeHTML(card.title);
+            // card.subtitle = encodeHTML(card.contentSnippet);
             
-            var source = Stacks.sources[wikipedia.altsources[i]];
-            if (source == null) {
-              step();
+            // card.body = "<p>"+card.content.replace("\n", "<br>")+"</p>";
+            card.body = "<p>"+card.contentSnippet.replace("\n", "<br>")+"</p>";
+            
+            // TODO check if card.content contains img
+            if (card.image != null) {
+              card.img = {
+                url: card.image.contentUrl
+              };
             }
-            Stacks.logt("wikipedia: passing on", source.id, q);
-            source.genCard(q).then(function(card) {
-              card.altSource = source.id;
-              resolve([card]);
-            }, function() {
-              step();
-            });
-          };
-          step();
-          return;
-        }
-        
-        for (var ci = 0; ci < cards.length; ++ci) {
-          var card = cards[ci];
-          
-          Stacks.logt("wikipedia: card", ci, card);
-          
-          if (card.pageprops.disambiguation != null) {
-            cards.splice(ci, 1);
-            --ci;
-            continue;
+
+            cards.push(card);
           }
           
-          card.url = "https://"+Stacks.lang+".wikipedia.org/wiki/"+encodeURI(card.title);
-          card.origTitle = card.title;
-          card.title = encodeHTML(card.title);
-          
-          //wikipedia only gives encoded output with plain extracts
-          //var extract = $(card.extract).first().text();
-          var extract = card.extract;
-          
-          if (260 < extract.length) {
-            extract = extract.substring(0, extract.indexOf(".", 140) + 1);
-          }
-          
-          card.body = "<p>"+extract.replace("\n", "<br>")+"</p>";
-          
-          if (card.thumbnail != null) {
-            card.img = {
-              url: card.thumbnail.source,
-              width: card.thumbnail.width,
-              height: card.thumbnail.height
-            };
-          }
-        }
-        
-        resolve(cards);
+          resolve(cards);
       }, reject);
     });
   },

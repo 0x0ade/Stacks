@@ -847,7 +847,7 @@ Stacks.search = function(q) {
 };
 Stacks.webviewSearch = function(q) {
   // Primitive Google search in an electron webview - plugins may replace this.
-  Stacks.settings.lastSearch = undefined;
+  delete Stacks.settings.lastSearch;
   Stacks.addStackFromQ();
   Stacks.setQ("");
   webview.open("https://www.google.com/search?q=" + encodeURIComponent(q));
@@ -1082,6 +1082,7 @@ $("#card-add").on("click", Stacks.addStackFromQ);
 // TESTING CODE
 if (Stacks.testing) {
   Stacks.warn("Testing mode!");
+  /**//*
   Stacks.sources["testing"] = {
     id: "testing",
     theme: {
@@ -1097,6 +1098,7 @@ if (Stacks.testing) {
     },
     genDOM: Stacks.genBasicCardDOM
   }
+  /**/
 }
 
 document.children[0].setAttribute("inapp", Stacks.app != null);

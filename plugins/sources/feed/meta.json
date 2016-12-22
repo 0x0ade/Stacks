@@ -4,9 +4,5 @@
   "description": "Stacks core module - RSS feed source",
   "version": 0,
   "type": "source",
-  "js": "./plugins/sources/feed/src.js",
-  
-  "api": {
-    "key": "AIzaSyAnSkhrnJBwqfO_zSSRyqWVjkbHFGXXrZE" //Replace this with your own key!
-  }
+  "js": "./plugins/sources/feed/src.js"
 }

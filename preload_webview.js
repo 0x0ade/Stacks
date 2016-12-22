@@ -1,2 +1,2 @@
 // not CommonJS
-module = undefined;
+delete module;
