@@ -4,7 +4,7 @@
   margin: 0 0 0 0; /*fixes progress bar being centered vertically*/
   border-radius: 0; /*we want none*/
   overflow: hidden; /*but if we want one, hide the rest*/
-  -webkit-mask-image: -webkit-radial-gradient(circle, white, black); /*chrome fix*/
+  -webkit-mask-image: -webkit-radial-gradient(circle, white, black); /* Chrome border-radius overflow fix */
   background: #BBDEFB;
 }
 .progress .indeterminate {
@@ -350,13 +350,16 @@ html[inwebview="true"] #webview-holder {
 .stack .card {
   transition: box-shadow 0.3s, transform 0.3s, color 0.3s;
   /*width: 370px;*/
+  min-height: 200px;
   margin: 0;
   z-index: 1;
   overflow: hidden;
   transform-origin: 50% 100%;
+  -webkit-mask-image: -webkit-radial-gradient(circle, white, black); /* Chrome border-radius overflow fix */
 }
 .stack .card .card-content {
   transition: opacity 0.3s, background 0.3s;
+  min-height: 200px;
 }
 .stack-header {
   transition: box-shadow 0.3s;
@@ -396,7 +399,7 @@ html[inwebview="true"] #webview-holder {
   color: #000;
 }
 .stack .card .card-content.placeholder-gradient {
-  background: linear-gradient(to top, #fff 0%, #fff 30%, #fff 100%);
+  background: linear-gradient(to top, #fff 10%, #fff 30%, #fff 70%, #fff 100%);
 }
 
 .card[data-stack-hidden] {

@@ -303,6 +303,10 @@ Stacks.genCardDOM = function(card) {
   
   card.DOM = Stacks.sources[card.source].genDOM(card);
   
+  if (card.isLinkCard) {
+    card.DOM.css("cursor", "pointer").on("click", () => Stacks.openurl(card.url));
+  }
+
   var actions = $("<div class=\"card-actions\"></div>");
   card.DOM.append(actions);
   
@@ -438,10 +442,14 @@ Stacks.showCardImage = function(card) {
     card.DOM.addClass("img");
     var colors = card.img.colors;
     var contentDOM = card.DOM.find(".card-content");
+
+    if (colors.bgRGB.r == colors.bgRGB.g && colors.bgRGB.g == colors.bgRGB.b) {
+      colors.bgRGB = {r: 255, g: 255, b: 255};
+    }
     
     var rgb = colors.bgRGB.r + ", " + colors.bgRGB.g + ", " + colors.bgRGB.b ;
     contentDOM[0].style["background"] = "linear-gradient(to top, " +
-      "rgba(" + rgb + ", 1.0) 0%, " +
+      "rgba(" + rgb + ", 1.0) 10%, " +
       "rgba(" + rgb + ", 0.7) 30%, " +
       "rgba(" + rgb + ", 0.5) 70%, " +
       "rgba(" + rgb + ", 0.45) 100%)";
@@ -852,6 +860,15 @@ Stacks.webviewSearch = function(q) {
   Stacks.setQ("");
   webview.open("https://www.google.com/search?q=" + encodeURIComponent(q));
 };
+
+Stacks.openurl = function(url) {
+  // Primitive wrapped / wrappable openurl function for fake anchor links - plugins may replace this
+  if (Stacks.app) {
+    webview.open(url);
+    return;
+  }
+  window.location.href = url;
+}
 
 Stacks.save = function() {
   Stacks.logt("stacks: saving");

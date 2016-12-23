@@ -89,22 +89,31 @@ feed = Stacks.sources["feed"] = {
 
             card.url = card.link;
 
-            card.title = encodeHTML(card.title);
+            // card.title already defined
             // card.subtitle = encodeHTML(card.contentSnippet);
             
             // card.body = "<p>"+card.content.replace("\n", "<br>")+"</p>";
+            if (card.content == 0) continue;
             card.body = "<p>"+card.contentSnippet.replace("\n", "<br>")+"</p>";
             
             // TODO check if card.content contains img
-            if (card.image != null) {
+            var indexOfImg = card.content.indexOf("<img ");
+            if (indexOfImg != -1) {
+              var indexOfSrcStart = card.content.indexOf(" src=\"", indexOfImg + 1) + 6;
+              var indexOfSrcEnd = card.content.indexOf("\"", indexOfSrcStart + 1);
               card.img = {
-                url: card.image.contentUrl
+                url: card.content.substring(indexOfSrcStart, indexOfSrcEnd)
               };
+            }
+
+            if (card.contentSnippet.length == 0) {
+              card.isLinkCard = true;
             }
 
             cards.push(card);
           }
           
+          if (cards.length == 0) reject();
           resolve(cards);
       }, reject);
     });
