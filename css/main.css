@@ -355,7 +355,6 @@ html[inwebview="true"] #webview-holder {
   z-index: 1;
   overflow: hidden;
   transform-origin: 50% 100%;
-  -webkit-mask-image: -webkit-radial-gradient(circle, white, black); /* Chrome border-radius overflow fix */
 }
 .stack .card .card-content {
   transition: opacity 0.3s, background 0.3s;
@@ -399,7 +398,7 @@ html[inwebview="true"] #webview-holder {
   color: #000;
 }
 .stack .card .card-content.placeholder-gradient {
-  background: linear-gradient(to top, #fff 10%, #fff 30%, #fff 70%, #fff 100%);
+  background: linear-gradient(to top, #fff 0%, #fff 30%, #fff 70%, #fff 100%);
 }
 
 .card[data-stack-hidden] {

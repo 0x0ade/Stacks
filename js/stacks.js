@@ -449,7 +449,7 @@ Stacks.showCardImage = function(card) {
     
     var rgb = colors.bgRGB.r + ", " + colors.bgRGB.g + ", " + colors.bgRGB.b ;
     contentDOM[0].style["background"] = "linear-gradient(to top, " +
-      "rgba(" + rgb + ", 1.0) 10%, " +
+      "rgba(" + rgb + ", 1.0) 0%, " +
       "rgba(" + rgb + ", 0.7) 30%, " +
       "rgba(" + rgb + ", 0.5) 70%, " +
       "rgba(" + rgb + ", 0.45) 100%)";
